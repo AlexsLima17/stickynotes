@@ -32,11 +32,11 @@ const createWindow = () => {
 
 // Janela sobre
 function aboutWindow() {
-  nativeTheme.themeSource='light'
+  nativeTheme.themeSource = 'light'
   // obter a janela principal 
   const mainWindow = BrowserWindow.getFocusedWindow()
   // validação (se existir a janela principal)
-  if (mianWindow){
+  if (mainWindow) {
     about = new BrowserWindow({
       width: 320,
       height: 260,
@@ -50,8 +50,8 @@ function aboutWindow() {
     })
 
   }
- 
-  about.loadFile ('./src/views/sobre.html')
+
+  about.loadFile('./src/views/sobre.html')
 }
 // inicialização da aplicação (assincronismo)
 app.whenReady().then(() => {
@@ -98,7 +98,7 @@ const template = [
     label: 'Ferramentas',
     submenu: [
       {
-        label:'Aplicar Zoom',
+        label: 'Aplicar Zoom',
         role: 'zoomIn'
       },
       {
@@ -111,6 +111,10 @@ const template = [
       },
       {
         type: 'separator'
+      },
+      {
+        label: 'Recarregar',
+        role: 'reload'
       },
       {
         label: 'DevTools',
@@ -127,7 +131,7 @@ const template = [
       },
       {
         label: 'Sobre',
-        click: () => aboutWindow ()
+        click: () => aboutWindow()
       }
     ]
   }

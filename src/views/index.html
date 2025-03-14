@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,26 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' ">
     <!--Titulo da Janela-->
     <title>Sticky Notes</title>
+    <!--Bootstrap -->
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+    <!-- CSS Personalizado  ATENÇÃO!! Sempre Após-->
+     <link rel="stylesheet" href="../public/css/style.css">
 </head>
+
 <body>
-    <h1>Hello Electron</h1>
+    <div class="container">
+        <h1>Hello Electron</h1>
+        <button type="button" class="btn btn-primary">Hello bootstrap</button>
+    </div>
+
+    <footer>
+        <p id="dataAtual"></p>
+        <img src="../public/img/dboff.png" alt="">
+    </footer>
+    <!-- Bootstrap -->
+    <script src="../public/js/bootstrap.min.js"></script>
+    <!-- Processo de renderização -->
+    <script src="render.js"></script>
 </body>
+
 </html>
