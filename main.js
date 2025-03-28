@@ -1,47 +1,50 @@
 console.log("Electron - Processo principal")
-
+ 
 // importação dos recursos do framework
 // app (aplicação)
 // BrowserWindow (criação da janela)
 // nativeTheme (definir tema claro ou escuro)
 // Menu (definir um menu personalizado)
 // shell (acessar links externos no navegador padrão)
-// ipcMain (permite estabelecer uma comunicação entre processos (IPC) main.js <=> renderer.js)
+// ipcMain permite estabelecer uma comucação entre os processos (IPC) main.js <-> renderer.js
 const { app, BrowserWindow, nativeTheme, Menu, shell, ipcMain } = require('electron/main')
-
-// Ativação do preload.js (importação do path)
+ 
+// ativação do preload.js (importação do path)
 const path = require('node:path')
-
-// Importação dos métodos conectar e desconectar (módulo de conexão)
+ 
+//importação dos métodos conectar e desconectar (módulo de conexão)
 const { conectar, desconectar } = require('./database.js')
-
-// Janela principal
+ 
+//importar o modelo de dados (Nodes.js)
+const noteModel = require('./src/models/Nodes.js')
+ 
+//Janela principal
 let win
 const createWindow = () => {
-  // definindo o tema da janela claro ou ecuro
+  // definindo o tema claro ou escuroda janela claro ou escuro
   nativeTheme.themeSource = 'light'
   win = new BrowserWindow({
-    width: 1010,
-    height: 720,
+    width: 1080,
+    height: 900,
     //frame: false,
     //resizable: false,
     //minimizable: false,
     //closable: false,
     //autoHideMenuBar: true,
+    //movable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-
-  // Carregar o menu personalizado
-  // Atenção! Antes importar o recurso Menu
+ 
+  // carregar o menu personalizado
+  // Atenção! antes importar o recurso Menu
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
-
-  // carregar o documento html na janela
+  // Carregar o documento html na janela
   win.loadFile('./src/views/index.html')
 }
-
-// janela sobre
+ 
+// Janela sobre
 let about
 function aboutWindow() {
   nativeTheme.themeSource = 'light'
@@ -50,12 +53,12 @@ function aboutWindow() {
   // validação (se existir a janela principal)
   if (mainWindow) {
     about = new BrowserWindow({
-      width: 300,
-      height: 200,
+      width: 320,
+      height: 230,
       autoHideMenuBar: true,
       resizable: false,
       minimizable: false,
-      // estabelecer uma relação hierárquica entre janelas
+      //estabelecer uma relação hierarquica entre janelas
       parent: mainWindow,
       // criar uma janela modal (só retorna a principal quando encerrada)
       modal: true,
@@ -64,19 +67,19 @@ function aboutWindow() {
       }
     })
   }
-
+ 
   about.loadFile('./src/views/sobre.html')
-
-  //recebimento da mensagem do renderizador da tela sobre para fechar a janela usando o botão OK
+ 
+  //recebimento da mensagem de renderização da tela sobre sobre para fechar a janela usando o botão 'OK'
   ipcMain.on('about-exit', () => {
-    //validação (se existir a janela e ela não estiver sido destruída, fechar)
+    //validação (se existir a janela e ela não estiver destruida, fechada)
     if (about && !about.isDestroyed()) {
-      about.close()
-    }   
+      about.close() //fechar a janela
+    }
   })
 }
-
-// janela Notas
+ 
+// Janela nota
 let note
 function noteWindow() {
   nativeTheme.themeSource = 'light'
@@ -84,13 +87,13 @@ function noteWindow() {
   const mainWindow = BrowserWindow.getFocusedWindow()
   // validação (se existir a janela principal)
   if (mainWindow) {
-    about = new BrowserWindow({
-      width: 400,
-      height: 270,
+    note = new BrowserWindow({
+      width: 500,
+      height: 400,
       autoHideMenuBar: true,
-      resizable: false,
-      minimizable: false,
-      // estabelecer uma relação hierárquica entre janelas
+      //resizable: false,
+      //minimizable: false,
+      //estabelecer uma relação hierarquica entre janelas
       parent: mainWindow,
       // criar uma janela modal (só retorna a principal quando encerrada)
       modal: true,
@@ -99,31 +102,34 @@ function noteWindow() {
       }
     })
   }
-
-  about.loadFile('./src/views/sobre.html')
+ 
+  note.loadFile('./src/views/nota.html')
 }
-
-// inicialização da aplicação (assíncronismo)
+ 
+ 
+ 
+// inicialização da aplicação (assincronismo)
 app.whenReady().then(() => {
   createWindow()
-
-  // Melhor local para estabelecer a conexão com o banco de dados
+ 
+  // melhor local para estabeler a conexão com o banco de dados
   // No MongoDB é mais eficiente manter uma única conexão aberta durante todo o tempo de vida do aplicativo e encerrar a conexão quando o aplicativo for finalizado
   // ipcMain.on (receber mensagem)
   // db-connect (rótulo da mensagem)
   ipcMain.on('db-connect', async (event) => {
-    //a linha abaixo estabelece a conexão com o banco de dados e verifica se foi conectado com sucesso (return true)
+    //alinha abaixo estabelece a conexão com o banco de dados
+    // e verifica se foi conectado com sucesso (return true)
     const conectado = await conectar()
     if (conectado) {
-      // enviar ao renderizador uma mensagem para trocar a imagem do ícone do status do banco de dados (criar um delay de 0.5 ou 1s para sincronização com a nuvem)
+      // enviar ao renderizador uma mensagem para trocar a imagem do ícone ícone do status do banco dados(Criar um delay 0.5 ou 1s para sincronização com a nuvem)
       setTimeout(() => {
-        // enviar ao renderizador a mensagem "conectado"
-        // db-status (IPC - comunicação entre processos - preload.js)
+        //enviar ao renderizador a mensagem "conectado"
+        // db-status (IPC - comunicação entre processos - proload.js)
         event.reply('db-status', "conectado")
       }, 500) //500ms = 0.5s
     }
   })
-
+ 
   // só ativar a janela principal se nenhuma outra estiver ativa
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -131,23 +137,23 @@ app.whenReady().then(() => {
     }
   })
 })
-
-// se o sistem não for MAC encerrar a aplicação quando a janela for fechada
+ 
+// se o sistema não MAC encerrar a aplicação quando a janela for fechada
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
-// IMPORTANTE! Desconectar do banco de dados quando a aplicação for finalizada
+ 
+// IMPORTANTE! Desconectar a conexão com o banco dados quando a aplicação for finalizada
 app.on('before-quit', async () => {
   await desconectar()
 })
-
-// Reduzir a verbosidade de logs não críticos (devtools)
+ 
+//Reduzir o verbozidade de tops não criticos (devtools)
 app.commandLine.appendSwitch('log-level', '3')
-
-// template do menu
+ 
+//template do meni
 const template = [
   {
     label: 'Notas',
@@ -175,11 +181,11 @@ const template = [
         role: 'zoomIn'
       },
       {
-        label: 'Reduzir',
+        label: 'Reduzir zoom',
         role: 'zoomOut'
       },
       {
-        label: 'Restaurar o zoom padrão',
+        label: 'Restaurar Zoom padrão',
         role: 'resetZoom'
       },
       {
@@ -199,8 +205,8 @@ const template = [
     label: 'Ajuda',
     submenu: [
       {
-        label: 'Repositório',
-        click: () => shell.openExternal('https://github.com/professorjosedeassis/stickynotes')
+        label: 'Repositorio',
+        click: () => shell.openExternal('https://github.com/AlexsLima17/stickynotes')
       },
       {
         label: 'Sobre',
@@ -209,3 +215,28 @@ const template = [
     ]
   }
 ]
+ 
+// =================================================================
+// == CRUD Create ==================================================
+ 
+ 
+// Recebimento do objeto que contem os dados da nota
+ipcMain.on('create-note', async(event, stickyNote) => {
+  //IMPORTANTE! Teste de recebimento do objeto - Passo 2
+  console.log(stickyNote)
+  //Criar uma nova estrutura de dados para salvar no banco
+  //ATENÇÃO!!! Os atributos da estrutura precisam ser identicos ao modelo e os valores são obtidos através do objeto StickNotes
+  const newNote = noteModel({
+    texto: stickyNote.textNote,
+    cor: stickyNote.colorNote
+  })
+  // Salvar a nota no bancod e dados (Passo 3 - fluxo)
+  newNote.save()
+  // enviar ao renderizador um pedido para limpar os campos e setar o formulário para os padrões originais(foco no texto) usando o preload.js
+  event.reply('reset-form')
+ })
+ 
+ 
+// == Fim - CRUD Create ============================================
+// =================================================================
+ 
