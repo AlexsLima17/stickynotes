@@ -1,7 +1,7 @@
 {
-  "name": "cadcli",
+  "name": "sticknotes",
   "version": "1.0.0",
-  "description": "Desenvolvimento de um sistema desktop para cadastro de clientes.",
+  "description": "Projeto de notas autoadesivas (estilo post-it) usando o framewrok Electron e o banco de dados MongoDB",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,19 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexsLima17/cadastro-clientes.git"
+    "url": "git+https://github.com/AlexsLima17/sticknotes.git"
   },
   "author": "Professor José de Assis",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AlexsLima17/cadastro-clientes#issues"
+    "url": "https://github.com/AlexsLima17/sticknotes/issues"
   },
-  "homepage": "https://github.com/AlexsLima17/cadastro-clientes#readme",
+  "homepage": "https://github.com/AlexsLima17/sticknotes#readme",
   "devDependencies": {
-    "electron": "^34.2.0"
+    "electron": "^34.3.0"
   },
   "dependencies": {
-    "jspdf": "^3.0.1",
-    "mongoose": "^8.12.2"
+    "mongoose": "^8.12.1"
   }
 }

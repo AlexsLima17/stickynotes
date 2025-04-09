@@ -1,18 +1,24 @@
 /**
- * Arquivo de pré carregamento(mais desempenho) e reforço de segurança na comunicação entre processos (IPC)
+ * preload.js - Usado no framework electron para aumentar a segurança e o desempenho
  */
 
 // importação dos recursos do framework electron
-// contextBridge (segurança) ipcRenderer (comunicação)
-const { contextBridge, ipcRenderer } = require('electron')
+// ipcRenderer permite estabelecer uma comunicação entre processos (IPC) main.js <=> renderer.js
+// contextBridge: permissões de comunicação entre processos usando a api do electron
+const { ipcRenderer, contextBridge } = require('electron')
 
-// Enviar ao main um pedido para conexão com o banco de dados e troca do ícone no processo de rendirzação (index.html - renderer.html)
+//Enviar uma mensagem para o main.js estabelecer uma conexão com o banco de dados quando iniciar a aplicação
+//send (enviar)
+//db-connect (rótulo para identificar a mensagem)
 ipcRenderer.send('db-connect')
 
-// expor (autorizar a comunicação entre processos)
+//permissões para estabelecer a comunicação entre processos
 contextBridge.exposeInMainWorld('api', {
-    clientWindow: () => ipcRenderer.send('client-window'),   
     dbStatus: (message) => ipcRenderer.on('db-status', message),
-    newClient: (client) => ipcRenderer.send('new-client', client),
-    resetForm: (args) => ipcRenderer.on('reset-form', args)
+    aboutExit: () => ipcRenderer.send('about-exit'),
+    createNote: (stickyNote) => ipcRenderer.send('create-note', stickyNote),
+    resetForm: (args) => ipcRenderer.on('reset-form', args),
+    listNotes: () => ipcRenderer.send('list-notes'),
+    renderNotes: (notes) => ipcRenderer.on('render-notes', notes)
 })
+
