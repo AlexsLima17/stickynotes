@@ -39,6 +39,9 @@ api.dbStatus((event, message) => {
     }
 })
 
+// enviar ai main um pedido para conectar com o banco de dados quando a janela principal for inicilizada
+api.dbConnect()
+
 // =============================================================
 // == CRUD Read ================================================
 
@@ -68,3 +71,14 @@ api.renderNotes((event, notes) => {
 
 // == Fim - CRUD Read ==========================================
 // =============================================================
+
+// =============================================================
+// == Atualização das notas ====================================
+
+api.mainReload((args) => {
+    location.reload()
+})
+
+// == Fim - atualização das notas ==============================
+// =============================================================
+

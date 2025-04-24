@@ -7,18 +7,16 @@
 // contextBridge: permissões de comunicação entre processos usando a api do electron
 const { ipcRenderer, contextBridge } = require('electron')
 
-//Enviar uma mensagem para o main.js estabelecer uma conexão com o banco de dados quando iniciar a aplicação
-//send (enviar)
-//db-connect (rótulo para identificar a mensagem)
-ipcRenderer.send('db-connect')
-
 //permissões para estabelecer a comunicação entre processos
 contextBridge.exposeInMainWorld('api', {
+    dbConnect: () => ipcRenderer.send('db-connect'),
     dbStatus: (message) => ipcRenderer.on('db-status', message),
     aboutExit: () => ipcRenderer.send('about-exit'),
     createNote: (stickyNote) => ipcRenderer.send('create-note', stickyNote),
     resetForm: (args) => ipcRenderer.on('reset-form', args),
     listNotes: () => ipcRenderer.send('list-notes'),
-    renderNotes: (notes) => ipcRenderer.on('render-notes', notes)
+    renderNotes: (notes) => ipcRenderer.on('render-notes', notes),
+    updateList: () => ipcRenderer.send('update-list'),
+    mainReload: (args) => ipcRenderer.on('main-reload', args)
 })
 
