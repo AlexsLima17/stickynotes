@@ -43,11 +43,10 @@ frmNote.addEventListener('submit', (event) => {
 // == Resetar o formulário =========================
 
 api.resetForm((args) => {
-    // recarregar a página
+    // recarregar a página notas
     location.reload()
     // recarregar a página principal(atualizar notas)
     api.updateList()
-
 })
 
 // == Fim - Resetar o formulário ===================
